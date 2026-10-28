@@ -21,7 +21,7 @@
 
   <main class="shell">
     <section class="hero">
-      <div class="eyebrow"><span class="eyebrow-line"></span> DIAGNOSTIC SUITE <span class="version">BETA 0.1</span></div>
+      <div class="eyebrow"><span class="eyebrow-line"></span> DIAGNOSTIC SUITE <span class="version">BETA 0.3</span></div>
       <h1>Comprends ton réseau.<br><span>Maîtrise chaque signal.</span></h1>
       <p class="hero-copy">Un tableau de bord réseau conçu pour la précision. Teste la disponibilité HTTPS d'un domaine et consulte tes résultats en temps réel.</p>
       <div class="hero-meta"><span><i></i> HTTPS CHECK</span><span><i></i> HISTORIQUE PRIVÉ</span><span><i></i> CLOUD ENGINE</span></div>
@@ -50,7 +50,7 @@
     </section>
 
     <section id="dashboard" class="hidden">
-      <div class="dashboard-head"><div><div class="panel-kicker">02 / CONSOLE</div><h2>Centre de diagnostic</h2><p class="muted">Vérifie si un domaine répond en HTTPS depuis le moteur NetMesh.</p></div><div class="user-pill"><span class="user-led"></span><span id="userLabel">OPERATOR</span></div></div>
+      <div class="dashboard-head"><div><div class="panel-kicker">02 / CONSOLE</div><h2>Centre de diagnostic</h2><p class="muted">Vérifie le DNS public, la réponse HTTPS, les redirections et quelques en-têtes de sécurité.</p></div><div class="user-pill"><span class="user-led"></span><span id="userLabel">OPERATOR</span></div></div>
       <div class="metrics">
         <div class="metric panel"><span class="metric-label">TESTS ENREGISTRÉS</span><strong id="metricTotal">—</strong><span class="metric-foot">dans ton historique</span></div>
         <div class="metric panel"><span class="metric-label">DERNIER TEMPS</span><strong id="metricLatency">—<small> ms</small></strong><span class="metric-foot">réponse HTTPS</span></div>
@@ -63,9 +63,15 @@
             <label for="host">Domaine public</label>
             <div class="host-input"><span>https://</span><input id="host" type="text" autocapitalize="none" spellcheck="false" placeholder="example.com" required><button id="checkBtn" class="btn btn-primary" type="submit">Lancer <span>↗</span></button></div>
             <p class="helper">Entre un domaine comme <button type="button" class="text-link" id="exampleBtn">example.com</button>. Pas d'adresse IP ni de réseau privé.</p>
+            <div class="quick-tests" aria-label="Tests rapides">
+              <span class="quick-label">TESTS RAPIDES</span>
+              <button type="button" class="chip" data-host="example.com">example.com</button>
+              <button type="button" class="chip" data-host="cloudflare.com">cloudflare.com</button>
+              <button type="button" class="chip" data-host="github.com">github.com</button>
+            </div>
           </form>
           <div id="resultBox" class="result-box hidden" aria-live="polite"></div>
-          <div class="disclaimer"><span>ⓘ</span><p>Ce test réalise une requête HTTPS depuis le serveur. Ce n'est pas un ping ICMP, un scan de ports ni un audit complet de sécurité.</p></div>
+          <div class="disclaimer"><span>ⓘ</span><p>Les mesures sont exécutées depuis le serveur NetMesh : DNS public via DNS-over-HTTPS, réponse HTTPS, redirections et présence de quelques en-têtes. Ce n’est ni un ping ICMP, ni un scan de ports, ni un audit complet.</p></div>
         </div>
         <div class="panel signal-panel">
           <div class="panel-kicker">ENGINE STATUS</div><h3>Diagnostic engine</h3>
@@ -78,11 +84,30 @@
       <div class="panel history-panel">
         <div class="panel-title-row"><div><div class="panel-kicker">03 / LOG STREAM</div><h3>Historique des diagnostics</h3></div><button id="refreshBtn" class="btn btn-outline btn-small">Actualiser ↻</button></div>
         <div class="table-wrap"><table><thead><tr><th>CIBLE</th><th>RÉSULTAT</th><th>LATENCE</th><th>DATE</th></tr></thead><tbody id="historyBody"><tr><td colspan="4" class="empty">Connecte-toi pour afficher ton historique.</td></tr></tbody></table></div>
+        <div class="history-tools">
+          <input id="historySearch" type="search" placeholder="Rechercher un domaine…" aria-label="Rechercher un domaine">
+          <select id="historyFilter" aria-label="Filtrer les résultats">
+            <option value="all">Tous les résultats</option><option value="success">HTTP réussi</option><option value="redirect">Redirections (3xx)</option><option value="error">Erreurs (4xx/5xx)</option>
+          </select>
+          <button id="exportBtn" class="btn btn-outline btn-small" type="button">Exporter CSV ↓</button>
+        </div>
         <div id="historyMessage" class="message" role="status"></div>
       </div>
+      <section class="capabilities">
+        <div class="panel-kicker">04 / CAPABILITIES</div>
+        <h2>Au-delà du simple test HTTPS.</h2>
+        <p class="muted capabilities-intro">Une feuille de route construite autour de mesures vérifiables, d'explications claires et d'une sécurité défensive.</p>
+        <div class="capability-grid">
+          <article class="capability panel"><span class="cap-icon">◎</span><h3>Observation du Web</h3><p>Vérification DNS publique, réponse HTTPS, redirections et présence d’en-têtes de sécurité courants.</p><span class="cap-status">ACTIF EN BETA 0.3</span></article>
+          <article class="capability panel"><span class="cap-icon">◉</span><h3>Réseau mondial de mesures</h3><p>À terme, des sondes volontaires pourront comparer l'accessibilité depuis plusieurs pays et réseaux, avec des protections contre les abus.</p><span class="cap-status future">FEUILLE DE ROUTE</span></article>
+          <article class="capability panel"><span class="cap-icon">⌘</span><h3>Diagnostic intelligent</h3><p>Transformer les mesures en explications compréhensibles et proposer des pistes de résolution sans affirmer une cause que les données ne prouvent pas.</p><span class="cap-status future">PROCHAINE ÉTAPE</span></article>
+          <article class="capability panel"><span class="cap-icon">{ }</span><h3>Infrastructure pour développeurs</h3><p>Une future API permettra à d'autres applications d'utiliser les mesures NetMesh avec authentification, quotas et documentation.</p><span class="cap-status future">FEUILLE DE ROUTE</span></article>
+        </div>
+        <p class="capabilities-note">Les contrôles DNS reposent sur un résolveur DNS-over-HTTPS public. Le test HTTPS confirme qu’une connexion a pu aboutir, mais n’expose pas la date d’expiration du certificat. NetMesh ne réalise pas de ping ICMP, de scan de ports ou de mesure mondiale.</p>
+      </section>
     </section>
 
-    <footer class="footer"><span>NETMESH <b>///</b> NETWORK INTELLIGENCE</span><span>BUILT FOR CLARITY · BETA 0.1</span></footer>
+    <footer class="footer"><span>NETMESH <b>///</b> NETWORK INTELLIGENCE</span><span>BUILT FOR CLARITY · BETA 0.3</span></footer>
   </main>
   <script src="app.js"></script>
 </body>

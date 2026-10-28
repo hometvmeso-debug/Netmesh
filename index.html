@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a10">
+  <meta name="description" content="NetMesh — plateforme de diagnostic réseau.">
+  <title>NetMesh // Network Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0"></script>
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="NetMesh accueil"><span class="brand-mark">N<span>↗</span></span><span>NET<span class="brand-light">MESH</span><small>NETWORK INTELLIGENCE</small></span></a>
+    <div class="top-right"><span class="live-dot"></span><span class="status-text">SYSTEM ONLINE</span><button id="logoutBtn" class="btn btn-quiet hidden">Déconnexion</button></div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow"><span class="eyebrow-line"></span> DIAGNOSTIC SUITE <span class="version">BETA 0.1</span></div>
+      <h1>Comprends ton réseau.<br><span>Maîtrise chaque signal.</span></h1>
+      <p class="hero-copy">Un tableau de bord réseau conçu pour la précision. Teste la disponibilité HTTPS d'un domaine et consulte tes résultats en temps réel.</p>
+      <div class="hero-meta"><span><i></i> HTTPS CHECK</span><span><i></i> HISTORIQUE PRIVÉ</span><span><i></i> CLOUD ENGINE</span></div>
+    </section>
+
+    <section id="authPanel" class="auth-grid">
+      <div class="panel auth-panel">
+        <div class="panel-kicker">01 / AUTHENTIFICATION</div>
+        <h2>Accès opérateur</h2>
+        <p class="muted">Connecte-toi pour lancer et sauvegarder tes diagnostics.</p>
+        <form id="authForm">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" type="email" autocomplete="email" placeholder="toi@exemple.com" required>
+          <label for="password">Mot de passe</label>
+          <input id="password" type="password" autocomplete="current-password" minlength="6" placeholder="6 caractères minimum" required>
+          <div class="auth-actions"><button class="btn btn-primary" type="submit" id="loginBtn">Se connecter <span>↗</span></button><button class="btn btn-outline" type="button" id="signupBtn">Créer un compte</button></div>
+        </form>
+        <div id="authMessage" class="message" role="status"></div>
+        <p class="tiny-note">Compte personnel. Ne partage jamais ton mot de passe.</p>
+      </div>
+      <div class="panel access-panel">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="core"><span>NM</span></div>
+        <div class="access-caption"><span class="mini-tag">SECURE ACCESS</span><h3>Observe.<br>Diagnostique.<br><em>Décide.</em></h3><p>Une première brique vers une vraie plateforme d'observabilité.</p></div>
+        <div class="corner-code">NM / 001<br>EDGE NODE</div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="dashboard-head"><div><div class="panel-kicker">02 / CONSOLE</div><h2>Centre de diagnostic</h2><p class="muted">Vérifie si un domaine répond en HTTPS depuis le moteur NetMesh.</p></div><div class="user-pill"><span class="user-led"></span><span id="userLabel">OPERATOR</span></div></div>
+      <div class="metrics">
+        <div class="metric panel"><span class="metric-label">TESTS ENREGISTRÉS</span><strong id="metricTotal">—</strong><span class="metric-foot">dans ton historique</span></div>
+        <div class="metric panel"><span class="metric-label">DERNIER TEMPS</span><strong id="metricLatency">—<small> ms</small></strong><span class="metric-foot">réponse HTTPS</span></div>
+        <div class="metric panel"><span class="metric-label">DERNIER STATUT</span><strong id="metricStatus">—</strong><span class="metric-foot">dernier diagnostic</span></div>
+      </div>
+      <div class="main-grid">
+        <div class="panel test-panel">
+          <div class="panel-title-row"><div><div class="panel-kicker">LIVE CHECK / 01</div><h3>Tester une cible</h3></div><span class="pill">HTTPS ONLY</span></div>
+          <form id="checkForm" class="check-form">
+            <label for="host">Domaine public</label>
+            <div class="host-input"><span>https://</span><input id="host" type="text" autocapitalize="none" spellcheck="false" placeholder="example.com" required><button id="checkBtn" class="btn btn-primary" type="submit">Lancer <span>↗</span></button></div>
+            <p class="helper">Entre un domaine comme <button type="button" class="text-link" id="exampleBtn">example.com</button>. Pas d'adresse IP ni de réseau privé.</p>
+          </form>
+          <div id="resultBox" class="result-box hidden" aria-live="polite"></div>
+          <div class="disclaimer"><span>ⓘ</span><p>Ce test réalise une requête HTTPS depuis le serveur. Ce n'est pas un ping ICMP, un scan de ports ni un audit complet de sécurité.</p></div>
+        </div>
+        <div class="panel signal-panel">
+          <div class="panel-kicker">ENGINE STATUS</div><h3>Diagnostic engine</h3>
+          <div class="engine-visual"><div class="engine-ring ring-1"></div><div class="engine-ring ring-2"></div><div class="engine-center"><span class="pulse"></span><b>NM</b></div></div>
+          <div class="engine-row"><span>API Gateway</span><b class="ok">● READY</b></div>
+          <div class="engine-row"><span>Auth session</span><b id="authStatus" class="ok">● ACTIVE</b></div>
+          <div class="engine-row"><span>HTTPS probe</span><b class="blue">● ON DEMAND</b></div>
+        </div>
+      </div>
+      <div class="panel history-panel">
+        <div class="panel-title-row"><div><div class="panel-kicker">03 / LOG STREAM</div><h3>Historique des diagnostics</h3></div><button id="refreshBtn" class="btn btn-outline btn-small">Actualiser ↻</button></div>
+        <div class="table-wrap"><table><thead><tr><th>CIBLE</th><th>RÉSULTAT</th><th>LATENCE</th><th>DATE</th></tr></thead><tbody id="historyBody"><tr><td colspan="4" class="empty">Connecte-toi pour afficher ton historique.</td></tr></tbody></table></div>
+        <div id="historyMessage" class="message" role="status"></div>
+      </div>
+    </section>
+
+    <footer class="footer"><span>NETMESH <b>///</b> NETWORK INTELLIGENCE</span><span>BUILT FOR CLARITY · BETA 0.1</span></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
